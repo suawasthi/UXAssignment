@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class UxpAssignmentApplication {
 
 	public static void main(String[] args) {
-		System.out.println("starting the application");
 		SpringApplication.run(UxpAssignmentApplication.class, args);
 	}
 

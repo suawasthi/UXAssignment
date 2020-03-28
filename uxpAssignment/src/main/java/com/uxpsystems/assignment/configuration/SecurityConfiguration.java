@@ -15,7 +15,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	UserDetailsService customUserDetailService;
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().and().formLogin().permitAll().and().logout().permitAll();
+		http.authorizeRequests().anyRequest().authenticated().and().formLogin().permitAll().and().logout().permitAll();
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
 	}

@@ -1,0 +1,58 @@
+* {
+    box-sizing: border-box;
+    min-height: 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+
+body {
+    margin: 1em auto;
+    width: 1000px;
+    min-height: calc(100vh - 2em);
+    color: #222;
+    font-family: 'Open Sans', sans-serif;
+}
+
+#app {
+    width: 1000px;
+    min-height: calc(100vh - 2em);
+    padding: 1em;
+    border: 1px solid black;
+    border-radius: 1em;
+    position: relative;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+hr {
+    width: 60%;
+    margin: 1em auto;
+    border: 0;
+    border-bottom: 1px solid black;
+}
+
+.nav {
+    width: fit-content;
+    margin: auto;
+    padding: 0.5em;
+}
+
+.button {
+    display: inline-block;
+    padding: 0.5em;
+    margin: 0 1em;
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.heading {
+    font-size: 1.8rem;
+}
+
+.label {
+  color: black;
+  padding: 8px;
+}

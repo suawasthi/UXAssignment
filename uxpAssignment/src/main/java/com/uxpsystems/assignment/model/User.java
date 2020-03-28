@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
@@ -26,7 +28,7 @@ public abstract class User extends Auditable {
 	public User(User user) {
 		this.userName = user.userName;
 		this.saltedPassword = user.saltedPassword;
-		this.isActive = user.isActive;
+		this.isActive = true;
 		this.roles = user.roles;
 	}
 
@@ -36,10 +38,12 @@ public abstract class User extends Auditable {
 	@NotBlank
 	protected String saltedPassword;
 	
-	protected boolean isActive;
+	protected boolean isActive=true;
 	
 	@ManyToMany(fetch=FetchType.EAGER)
 	protected Set<Role> roles = new HashSet<Role>();
 	
+	@Email
+	private String email;
 
 }

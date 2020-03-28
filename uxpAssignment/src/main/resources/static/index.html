@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<title>User operation assignment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="css/index.css">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+
+	<div id="app">
+		<div class="nav">
+			<a class="button" href="#" v-on:click="page='create'">Create
+				User</a> <a class="button" href="#" v-on:click="page='delete'">Delete
+				User</a> <a class="button" href="#" v-on:click="page='update'"
+				v-on:click="refeshUserBase()">Update User</a> <a class="button"
+				href="#" v-on:click="page='view'">view User</a> <a class="button"
+				href="/logout" class="logout">Logout <b>{{ username }}</b>
+			</a>
+		</div>
+		<hr>
+		<div v-if="page === 'create'" class="create">
+			<div class="heading w3-container w3-teal">Create User</div>
+			<br>
+
+			<form class="w3-container">
+				<p>
+					<label>User Name</label> <input class="w3-input w3-border w3-round"
+						type="text" v-model="createUserData.username1"
+						placeholder="username" value="">
+				</p>
+
+				<p>
+					<label>Password</label> <input class="w3-input w3-border w3-round"
+						type="password" v-model="createUserData.password"
+						placeholder="password">
+				</p>
+				<p>
+					<label>Email</label> <input class="w3-input w3-border w3-round"
+						type="text" v-model="createUserData.email"
+						placeholder="email address">
+				</p>
+
+				<p>
+					<label>Role</label> <select class="w3-select w3-border w3-round"
+						name="option" v-model="createUserData.role">
+						<option value="" disabled selected>Choose your option</option>
+						<option value="IS_ADMIN">Admin</option>
+						<option value="IS_SUPERUSER">Customer</option>
+						<option value="USER">Super User</option>
+					</select> <br> <br>
+				<p>
+					<button class="w3-btn w3-teal" v-on:click="createUser()">Create</button>
+				</p>
+			</form>
+
+		</div>
+		<div v-if="page === 'delete'" class="delete">
+			<div class="heading w3-container w3-teal">Delete User
+				(Method-DELETE)</div>
+
+			<br> <br> <label> Select username to delete user
+				and its details </label> <select v-model="deleted"
+				class="w3-select w3-border w3-round">
+				<option v-for="option in options" v-bind:value="option.id">
+					{{ option.userName }}</option>
+			</select> <br> <br>
+			<p>
+				<button class="w3-btn w3-teal" v-on:click="changeDeleteItem()">Delete</button>
+			</p>
+		</div>
+		<div v-if="page === 'update'" class="update">
+
+			<div class="heading w3-container w3-teal">Update User
+				(Method-PUT)</div>
+			<br> <br> <label> Select username to update user
+				and its details </label> <select v-model="updated"
+				class="w3-select w3-border w3-round"
+				v-on:change="changeUpdateItem()">
+				<option v-for="option in options" v-bind:value="option.id">
+					{{ option.userName }}</option>
+			</select>
+			<div v-if="updatedUser.userName">
+				<form class="w3-container">
+					<p>
+						<label>User Name</label> <input
+							class="w3-input w3-border w3-round" type="text"
+							v-model="updatedUser.userName" placeholder="username" value="">
+					</p>
+
+
+					<p>
+						<label>Email</label> <input class="w3-input w3-border w3-round"
+							type="text" v-model="updatedUser.email"
+							placeholder="email address">
+					</p>
+
+					<p>
+						<label>Is Active</label> <input
+							class="w3-input w3-border w3-round" type="text"
+							v-model="updatedUser.active" placeholder="email address">
+					</p>
+
+					<p>
+						<label>Role</label> <select class="w3-select w3-border w3-round"
+							name="option" v-model="updatedUser.role">
+							<option value="">Choose your option</option>
+							<option value="IS_ADMIN">Admin</option>
+							<option value="IS_SUPERUSER">Customer</option>
+							<option value="USER">Super User</option>
+						</select> <br> <br>
+					<p>
+						<button class="w3-btn w3-teal" v-on:click="createUser()">Create</button>
+					</p>
+				</form>
+			</div>
+		</div>
+		<div v-if="page === 'view'" class="view">
+			<div class="heading w3-container w3-teal">View User
+				(METHOD-GET)</div>
+			<br> <br> <label> Select username to fetch user and
+				its details </label> <select v-model="selected"
+				class="w3-select w3-border w3-round" v-on:change="changeGetItem()">
+				<option v-for="option in options" v-bind:value="option.id">
+					{{ option.userName }}</option>
+			</select>
+
+			<div v-if="selectedUser.id">
+				<p>
+					<label> Selected userID: </label> {{selectedUser.id}}
+				</p>
+				<br>
+				<h2>
+					<label>Fetched User Details</label>
+				</h2>
+				<p>
+					<label><b>User Name: </b></label> {{selectedUser.userName}}
+				</p>
+				<p>
+					<label><b>Email Address:</b> </label> {{selectedUser.email}}
+				</p>
+
+				<p>
+					<label><b>Is Active:</b> </label> {{selectedUser.active}}
+				</p>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+	</div>
+	<script src="js/app.js"></script>
+
+</body>
+</html>
