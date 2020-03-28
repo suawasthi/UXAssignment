@@ -27,7 +27,7 @@ public abstract class User extends Auditable {
 		this.userName = user.userName;
 		this.saltedPassword = user.saltedPassword;
 		this.isActive = user.isActive;
-		this.authorities = user.authorities;
+		this.roles = user.roles;
 	}
 
 	@Column(unique=true)
@@ -35,11 +35,11 @@ public abstract class User extends Auditable {
 	protected String userName;
 	@NotBlank
 	protected String saltedPassword;
-	@NotBlank
+	
 	protected boolean isActive;
 	
 	@ManyToMany(fetch=FetchType.EAGER)
-	protected Set<Role> authorities = new HashSet<Role>();
+	protected Set<Role> roles = new HashSet<Role>();
 	
 
 }
