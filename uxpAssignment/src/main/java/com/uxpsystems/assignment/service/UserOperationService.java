@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.uxpsystems.assignment.model.CreateUSer;
 import com.uxpsystems.assignment.model.User;
 
 @Service
@@ -20,5 +21,7 @@ public interface UserOperationService {
 	public User getUserByID(Long id);
 	
 	public void deleteUserByID(Long id);
+
+	public void updateUser(CreateUSer user);
 
 }

@@ -16,6 +16,7 @@ import com.uxpsystems.assignment.dao.ConsumerRepo;
 import com.uxpsystems.assignment.dao.RoleRepo;
 import com.uxpsystems.assignment.dao.UserRepo;
 import com.uxpsystems.assignment.model.Admin;
+import com.uxpsystems.assignment.model.CreateUSer;
 import com.uxpsystems.assignment.model.Customer;
 import com.uxpsystems.assignment.model.Role;
 import com.uxpsystems.assignment.model.User;
@@ -71,14 +72,28 @@ public class UserOperationImpl implements UserOperationService {
 
 	@Override
 	public User getUserByID(Long id) {
-		Optional<User> user= userRepo.findById(id);
+		Optional<User> user = userRepo.findById(id);
 		return user.get();
 	}
 
 	@Override
 	public void deleteUserByID(Long id) {
 		userRepo.deleteById(id);
-		
+
+	}
+
+	@Override
+	public void updateUser(CreateUSer user) {
+		Optional<User> optionalUser = userRepo.findById(user.getID());
+		if (!optionalUser.isPresent()) {
+
+		} else {
+			optionalUser.get().setEmail(user.getEmail());
+			optionalUser.get().setActive(user.getIsActive());
+			optionalUser.get().setUserName(user.getUserName());
+			userRepo.save(optionalUser.get());
+
+		}
 	}
 
 }

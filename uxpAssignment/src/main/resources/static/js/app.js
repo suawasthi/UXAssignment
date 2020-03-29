@@ -14,6 +14,7 @@ window.app = new Vue({
         	email:"-",
         	active:false,
         	id:null,
+        	role:"",
         },
         selected: '0',
         deleted:'0',
@@ -23,11 +24,11 @@ window.app = new Vue({
             email:"", 
             ID:"",
         }],
+        // createUserData.username
         createUserData: {
-        	username1: "",
+        	userName: "default",
             password: "",
             email:"", 
-            role:"",
         },
         
     },
@@ -35,15 +36,49 @@ window.app = new Vue({
     	refeshUserBase: function(){
     		fetch('/all-user').then(this.getAllUser);
     	},
-    	createUser: function (gameMode) {
-            fetch('/create-user?' + new URLSearchParams({
-                username1: this.createUserData.username1,
-                password: this.createUserData.password,
-                email: this.createUserData.email,
-                role:this.createUserData.role,
-            }));
-            fetch('/all-user').then(this.getAllUser);
-            },
+    	updateUser: function(){
+    		console.log("inside update user");
+    		fetch('/update-user', {
+                
+                // Adding method type
+                method: "PUT", 
+                body: JSON.stringify({ 
+                    id:this.updatedUser.id,
+                	userName: this.updatedUser.userName, 
+                    email: this.updatedUser.email, 
+                    password: this.updatedUser.password,
+                    role: this.updatedUser.role,
+                    isActive: this.updatedUser.active
+                }), 
+                  
+                headers: { 
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+              
+            });
+
+    	},
+    	createUser: function () {
+    		console.log("inside create user");
+      
+            
+            fetch('/create-user1', {
+                
+                // Adding method type
+                method: "POST", 
+                body: JSON.stringify({ 
+                    userName: this.createUserData.userName, 
+                    email: this.createUserData.email, 
+                    password: this.createUserData.password,
+                }), 
+                  
+                headers: { 
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+              
+            });
+            console.log("adfafafsdafsf");
+    	},
         getAllUser: function(response){
         	let appdata=this;
         	response.json().then(function(data){
@@ -54,7 +89,7 @@ window.app = new Vue({
         },
         performDelete:function(){
         	fetch('/delete-user?' +  new URLSearchParams({
-        		id:this.deleted}));
+        		id:this.deleted}), {method: "DELETE"});
         	fetch('/all-user').then(this.getAllUser);
         	deleted='0';
         },

@@ -28,7 +28,7 @@
 			<form class="w3-container">
 				<p>
 					<label>User Name</label> <input class="w3-input w3-border w3-round"
-						type="text" v-model="createUserData.username1"
+						type="text" v-model="createUserData.userName"
 						placeholder="username" value="">
 				</p>
 
@@ -100,7 +100,7 @@
 					<p>
 						<label>Is Active</label> <input
 							class="w3-input w3-border w3-round" type="text"
-							v-model="updatedUser.active" placeholder="email address">
+							v-model="updatedUser.active" placeholder="active">
 					</p>
 
 					<p>
@@ -112,7 +112,7 @@
 							<option value="USER">Super User</option>
 						</select> <br> <br>
 					<p>
-						<button class="w3-btn w3-teal" v-on:click="createUser()">Create</button>
+						<button class="w3-btn w3-teal" v-on:click="updateUser()">Update</button>
 					</p>
 				</form>
 			</div>
