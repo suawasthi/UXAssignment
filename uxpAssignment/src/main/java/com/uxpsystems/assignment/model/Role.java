@@ -1,6 +1,9 @@
 package com.uxpsystems.assignment.model;
 
+import java.util.Collection;
+
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
@@ -14,15 +17,16 @@ public class Role extends Auditable {
 	
 	public Role(){}
 	
-	public Role(@NotBlank String roleName, boolean isroleActive) {
-		this.roleActive=isroleActive;
-		this.roleName=roleName;
+	public Role(@NotBlank String roleName) {
+		this.name=roleName;
 	}
+	@ManyToMany(mappedBy="roles")
+	private Collection<User> user;
 	
 	
 	@NotBlank
-	String roleName;
+	String name;
 	
-	boolean roleActive;
+	
 
 }

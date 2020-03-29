@@ -1,6 +1,7 @@
 window.app = new Vue({
     el: '#app',
     data: {
+    	errorText: "",
         page: "create",
         username:"",
         selectedUser:{
@@ -20,19 +21,38 @@ window.app = new Vue({
         deleted:'0',
         updated:'0',
         options: [{
-        	username1: "",
+        	username: "",
             email:"", 
             ID:"",
         }],
         // createUserData.username
         createUserData: {
-        	userName: "default",
+        	userName: "",
             password: "",
-            email:"", 
+            email:"",
+            role:""
         },
         
     },
     methods: {
+    	setError: function(response) {
+            if(response.status==='success') return;
+            if(response.status=='403'){
+            	console.log("inside 403");
+            	this.errorText="Permission Denied";
+            	return;
+            } 
+            response.text().then(function(data){
+            	console.log(data);
+        		this.errorText=data;
+        	})
+            if(response.status==='500'){
+            	console.log("adsf");
+            	this.errorText = "Error: " + "Action not allowed";
+            	let self = this;
+            	setTimeout(() => {self.errorText = '';}, 10000);
+            }
+        },
     	refeshUserBase: function(){
     		fetch('/all-user').then(this.getAllUser);
     	},
@@ -55,14 +75,14 @@ window.app = new Vue({
                     "Content-type": "application/json; charset=UTF-8"
                 }
               
-            });
+            }).then(this.setError);
 
     	},
     	createUser: function () {
     		console.log("inside create user");
       
             
-            fetch('/create-user1', {
+            fetch('/create-user', {
                 
                 // Adding method type
                 method: "POST", 
@@ -70,14 +90,17 @@ window.app = new Vue({
                     userName: this.createUserData.userName, 
                     email: this.createUserData.email, 
                     password: this.createUserData.password,
+                    role:this.createUserData.role,
                 }), 
                   
                 headers: { 
                     "Content-type": "application/json; charset=UTF-8"
                 }
               
-            });
-            console.log("adfafafsdafsf");
+            }).catch( err => {
+            	console.log("adfafafsdafsf");
+                err.text().then( this.errorText="Permission Denied")
+                  });
     	},
         getAllUser: function(response){
         	let appdata=this;
@@ -89,8 +112,7 @@ window.app = new Vue({
         },
         performDelete:function(){
         	fetch('/delete-user?' +  new URLSearchParams({
-        		id:this.deleted}), {method: "DELETE"});
-        	fetch('/all-user').then(this.getAllUser);
+        		id:this.deleted}), {method: "DELETE"}).then(this.setError);
         	deleted='0';
         },
         performUpdate:function(){

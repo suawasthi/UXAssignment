@@ -56,3 +56,12 @@ hr {
   color: black;
   padding: 8px;
 }
+
+.error {
+    color: red;
+    text-align: center;
+    position: absolute;
+    bottom: 1em;
+    left: 0;
+    width: 100%;
+}

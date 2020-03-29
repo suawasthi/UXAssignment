@@ -1,6 +1,7 @@
 package com.uxpsystems.assignment.service;
 
 import java.io.EOFException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import com.uxpsystems.assignment.dao.AdminRepo;
 import com.uxpsystems.assignment.dao.ConsumerRepo;
 import com.uxpsystems.assignment.dao.RoleRepo;
 import com.uxpsystems.assignment.dao.UserRepo;
+import com.uxpsystems.assignment.exeception.UXPExecption;
 import com.uxpsystems.assignment.model.Admin;
 import com.uxpsystems.assignment.model.CreateUSer;
 import com.uxpsystems.assignment.model.Customer;
@@ -42,7 +44,7 @@ public class UserOperationImpl implements UserOperationService {
 
 	@Override
 	public void addUser(String userNAme, String password, String email, String roleName) {
-		User user = roleName.equals("IS_ADMIN") ? new Admin() : new Customer();
+		User user = roleName.equals("ROLE_ADMIN") ? new Admin() : new Customer();
 
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -50,12 +52,11 @@ public class UserOperationImpl implements UserOperationService {
 		user.setUserName(userNAme);
 		user.setEmail(email);
 
-		List<Role> roles = roleRepo.findAll();
-		Set<Role> roless = new HashSet<Role>();
-		for (Role role : roles) {
-			if (role.equals(roleName)) {
-				roless.add(role);
-			}
+		Optional<Role> roles = roleRepo.findByName(roleName);
+		if(!roles.isPresent()) {
+			//create new role TODO
+		}else {
+			user.setRoles(Arrays.asList(roles.get()));
 		}
 
 		if (roleName.equals("IS_ADMIN")) {
@@ -77,7 +78,14 @@ public class UserOperationImpl implements UserOperationService {
 	}
 
 	@Override
-	public void deleteUserByID(Long id) {
+	public void deleteUserByID(Long id, Authentication authentication) throws UXPExecption {
+		Optional<User> user = userRepo.findById(id);
+		if (!user.isPresent()) {
+			throw new UXPExecption("User does not exists");
+		}
+		if (user.get().getUserName().equals(authentication.getName())) {
+			throw new UXPExecption("Can't delete current user");
+		}
 		userRepo.deleteById(id);
 
 	}

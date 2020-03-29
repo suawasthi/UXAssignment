@@ -1,7 +1,9 @@
 package com.uxpsystems.assignment.bootStrap;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,28 +38,43 @@ public class DEVBootStrap implements ApplicationListener<ContextRefreshedEvent> 
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		Admin admin = new Admin();
 		admin.setSaltedPassword(passwordEncoder.encode("admin"));
-		admin.setUserName("admin");
+		admin.setUserName("Admin");
+		admin.setEmail("admin@gmail.com");
 		admin.setActive(true);
 		
-		List<Role> roles = roleRepo.findAll();
-		Set<Role> roleSet = new HashSet<Role>();
-		for(Role role : roles) {
-			if(role.getRoleName().equals("IS_ADMIN")) {
-				roleSet.add(role);
-			}
-		}
+		Optional<Role> adminRole  = roleRepo.findByName("ADMIN");
+		admin.setRoles(Arrays.asList(adminRole.get()));
+		
+		
+		
+		
+		
+		Admin superUser = new Admin();
+		superUser.setUserName("Ravish");
+		superUser.setSaltedPassword(passwordEncoder.encode("ravish"));
+		superUser.setEmail("ravish@gmail.com");
+		superUser.setActive(true);
+		
+		Optional<Role> superUsers  = roleRepo.findByName("SUPERUSER");
+		superUser.setRoles(Arrays.asList(superUsers.get()));
 		
 		adminRepo.save(admin);
+		adminRepo.save(superUser);
 		
 	}
 
 	private void addRoles() {
-		Role admin = new Role("IS_ADMIN", true);
-		Role superUser = new Role("IS_SUPERUSER", true);
-		Role user = new Role("USER", true);
-		roleRepo.save(admin);
+		Role admin = new Role("ADMIN");
+		Role superUser = new Role("SUPERUSER");
+		Role user = new Role("USER");
+		Role read = new Role("READ");
+		Role write = new Role("WRITE");
+		
 		roleRepo.save(superUser);
 		roleRepo.save(user);
+		roleRepo.save(admin);
+		roleRepo.save(read);
+		roleRepo.save(write);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.uxpsystems.assignment.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
@@ -41,7 +44,8 @@ public abstract class User extends Auditable {
 	protected boolean isActive=true;
 	
 	@ManyToMany(fetch=FetchType.EAGER)
-	protected Set<Role> roles = new HashSet<Role>();
+	@JoinTable(name="user_role", joinColumns=@JoinColumn(name="user_id", referencedColumnName="ID"), inverseJoinColumns=@JoinColumn(name="role_id", referencedColumnName="ID"))
+	protected Collection<Role> roles;
 	
 	@Email
 	private String email;

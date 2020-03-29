@@ -1,13 +1,15 @@
 package com.uxpsystems.assignment.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.constraints.Email;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,6 +34,15 @@ public class UserOperationController {
 	@Autowired
 	LoginController loginContoller;
 
+	private static JSONObject success;
+
+	static {
+		success = new JSONObject();
+		success.put("status", "success");
+	}
+
+	
+
 	@RequestMapping("/userDetails")
 	public JSONObject getUserDetails(Authentication auth) throws UXPExecption {
 		Optional<User> users = userService.getUser(auth);
@@ -47,22 +58,14 @@ public class UserOperationController {
 		return jsonObject;
 	}
 
-	@PostMapping("/testing")
-	public String someThing(@RequestParam("userName") String username, @RequestParam("password") String password,
-			@RequestParam("email") String email) {
-		return username + "asdf" + password + " email" + email;
+	@PutMapping(value = "/update-user")
+	public JSONObject updateUser(Authentication auth, @RequestBody CreateUSer user) {
+		userService.updateUser(user);
+		return success;
 	}
 
-	
-	@PutMapping(value="/update-user" ) 
-	public void updateUser(Authentication auth, @RequestBody CreateUSer user) {
-		System.out.println("inside update  method" + user.toString());
-		userService.updateUser(user);
-	}
-	
 	@GetMapping("/all-user")
 	public List<User> getAllUser() {
-		System.out.println("***************let go ");
 		return userService.getAllUser();
 	}
 
@@ -72,14 +75,32 @@ public class UserOperationController {
 	}
 
 	@DeleteMapping("/delete-user")
-	public void deleteUserByID(Authentication auth, @RequestParam(name = "id") Long id) {
-		userService.deleteUserByID(id);
+	public JSONObject deleteUserByID(Authentication auth, @RequestParam(name = "id") Long id) throws UXPExecption {
+
+		userService.deleteUserByID(id, auth);
+
+		return success;
 	}
 
-	@PostMapping(value="/create-user1" ) 
-	public void createUser(Authentication auth, @RequestBody CreateUSer user) {
-		System.out.println("inside this method" + user.toString());
-		userService.addUser(user.getUserName(), user.getPassword(), user.getEmail(), "ADMIN");
-		//loginContoller.getIndex(auth);
+	@ExceptionHandler(UXPExecption.class)
+	public final ResponseEntity<String> handleCustomException(UXPExecption exception) {
+		
+		 List<String> details = new ArrayList<>();
+	       details.add(exception.getLocalizedMessage());
+        ErrorResponse error = new ErrorResponse(details, exception.getMessage());
+
+		return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+	
+	@PostMapping(value = "/create-user")
+	public JSONObject createUser(Authentication auth, @RequestBody CreateUSer user) {
+		userService.addUser(user.getUserName(), user.getPassword(), user.getEmail(), user.getRole());
+		return success;
+	}
+	
+	@RequestMapping("/noAccess")
+	public String noAcess() {
+		return "Permission denied";
 	}
 }
