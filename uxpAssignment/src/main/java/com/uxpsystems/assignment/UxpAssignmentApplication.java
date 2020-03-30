@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class UxpAssignmentApplication {
 
 	public static void main(String[] args) {
+		
 		SpringApplication.run(UxpAssignmentApplication.class, args);
 	}
 
