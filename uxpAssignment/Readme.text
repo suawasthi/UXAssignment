@@ -1,0 +1,19 @@
+http://localhost:9090/assignement
+
+username: Admin
+Password: admin
+
+username: Ravish
+password: ravish
+
+
+Features: 
+	1. Create user ----By Admin and Super user by using Layered Service sercurity----POST
+	2. View Users ----By All users---GET
+	3. Delete user - By Admin , super user and write access---DELETE
+	4. Update user-- By super user, Admin and Delete acess
+
+
+
+Note: Please refresh to get latest update 
+	

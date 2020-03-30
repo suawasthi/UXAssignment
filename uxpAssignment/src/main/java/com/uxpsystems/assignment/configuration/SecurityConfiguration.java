@@ -20,7 +20,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	UserDetailsService customUserDetailService;
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/").authenticated().antMatchers("/h2-console/**").permitAll().and().formLogin().permitAll().and().logout().permitAll().and().exceptionHandling().accessDeniedPage("/noAccess");
+		http.authorizeRequests().antMatchers("/*").authenticated().antMatchers("/h2-console/**").permitAll().and().formLogin().permitAll().and().logout().permitAll().and().exceptionHandling().accessDeniedPage("/noAccess");
 
 		 http.csrf().disable();
 		http.headers().frameOptions().disable();

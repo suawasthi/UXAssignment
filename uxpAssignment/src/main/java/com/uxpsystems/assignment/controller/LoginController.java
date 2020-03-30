@@ -12,7 +12,7 @@ public class LoginController {
 	@Autowired
 	UserOperationService userService;
 	
-	@RequestMapping("/trial")
+	@RequestMapping("/assignement")
 	public String getIndex(Authentication auth) {
 		return "index.html";
 		
