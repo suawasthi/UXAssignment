@@ -18,7 +18,7 @@ public interface UserOperationService {
 	public Optional<User> getUser(Authentication auth);
 
 	@Secured({ "ROLE_ADMIN", "ROLE_SUPERUSER" })
-	void addUser(String userNAme, String password, String email, String roleName);
+	public void addUser(String userNAme, String password, String email, String roleName);
 
 	@Secured({ "ROLE_USER", "ROLE_READ", "ROLE_WRITE", "ROLE_ADMIN", "ROLE_SUPERUSER" })
 	public List<User> getAllUser();
