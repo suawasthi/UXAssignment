@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+
 import lombok.Data;
 
 @Entity
@@ -20,9 +22,6 @@ public class Role extends Auditable {
 	public Role(@NotBlank String roleName) {
 		this.name=roleName;
 	}
-	@ManyToMany(mappedBy="roles")
-	private Collection<User> user;
-	
 	
 	@NotBlank
 	String name;

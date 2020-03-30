@@ -19,18 +19,15 @@ public class CustomUserDetail extends User implements UserDetails {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	
 	public CustomUserDetail(User user) {
 		super(user);
 	}
-	
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<Role> roles = super.getRoles();
+		Role role = super.getRoles();
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		for (Role rol : roles) {
-			authorities.add(new SimpleGrantedAuthority("ROLE_"+ rol.getName()));
-		}
+		authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
 		return authorities;
 	}
 
@@ -49,13 +46,13 @@ public class CustomUserDetail extends User implements UserDetails {
 	@Override
 	public boolean isAccountNonExpired() {
 		// TODO Auto-generated method stub
-		return true;
+		return super.isActive;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
 		// TODO Auto-generated method stub
-		return true;
+		return super.isActive;
 	}
 
 	@Override
@@ -67,7 +64,7 @@ public class CustomUserDetail extends User implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
-		return true;
+		return super.isActive;
 	}
 
 }

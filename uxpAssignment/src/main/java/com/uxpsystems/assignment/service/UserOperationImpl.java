@@ -1,6 +1,7 @@
 package com.uxpsystems.assignment.service;
 
 import java.io.EOFException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +45,7 @@ public class UserOperationImpl implements UserOperationService {
 
 	@Override
 	public void addUser(String userNAme, String password, String email, String roleName) {
-		User user = roleName.equals("ROLE_ADMIN") ? new Admin() : new Customer();
+		User user = new Customer();
 
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -56,19 +57,26 @@ public class UserOperationImpl implements UserOperationService {
 		if(!roles.isPresent()) {
 			//create new role TODO
 		}else {
-			user.setRoles(Arrays.asList(roles.get()));
+			user.setRoles(roles.get());
 		}
 
-		if (roleName.equals("IS_ADMIN")) {
-			adminRepo.save((Admin) user);
-		} else {
-			consumerRepo.save((Customer) user);
-		}
+		consumerRepo.save((Customer)user);
 	}
 
 	@Override
 	public List<User> getAllUser() {
-		return userRepo.findAll();
+		List<Admin> usr= adminRepo.findAll();
+		List<Customer> consumer = consumerRepo.findAll();
+		
+		List<User> user = new ArrayList<User>();
+		for(Admin admin: usr) {
+			user.add(admin);
+		}
+		for(Customer cust: consumer) {
+			user.add(cust);
+		}
+		return user;
+		
 	}
 
 	@Override
@@ -96,9 +104,11 @@ public class UserOperationImpl implements UserOperationService {
 		if (!optionalUser.isPresent()) {
 
 		} else {
+			Optional<Role> role = roleRepo.findByName(user.getRole());
 			optionalUser.get().setEmail(user.getEmail());
 			optionalUser.get().setActive(user.getIsActive());
 			optionalUser.get().setUserName(user.getUserName());
+			optionalUser.get().setRoles(role.get());
 			userRepo.save(optionalUser.get());
 
 		}

@@ -43,7 +43,7 @@ public class DEVBootStrap implements ApplicationListener<ContextRefreshedEvent> 
 		admin.setActive(true);
 		
 		Optional<Role> adminRole  = roleRepo.findByName("ADMIN");
-		admin.setRoles(Arrays.asList(adminRole.get()));
+		admin.setRoles(adminRole.get());
 		
 		
 		
@@ -56,7 +56,7 @@ public class DEVBootStrap implements ApplicationListener<ContextRefreshedEvent> 
 		superUser.setActive(true);
 		
 		Optional<Role> superUsers  = roleRepo.findByName("SUPERUSER");
-		superUser.setRoles(Arrays.asList(superUsers.get()));
+		superUser.setRoles(superUsers.get());
 		
 		adminRepo.save(admin);
 		adminRepo.save(superUser);

@@ -12,9 +12,12 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 
 import lombok.Data;
 
@@ -43,9 +46,9 @@ public abstract class User extends Auditable {
 	
 	protected boolean isActive=true;
 	
-	@ManyToMany(fetch=FetchType.EAGER)
-	@JoinTable(name="user_role", joinColumns=@JoinColumn(name="user_id", referencedColumnName="ID"), inverseJoinColumns=@JoinColumn(name="role_id", referencedColumnName="ID"))
-	protected Collection<Role> roles;
+	@JsonIdentityReference
+	@ManyToOne
+	Role roles;
 	
 	@Email
 	private String email;

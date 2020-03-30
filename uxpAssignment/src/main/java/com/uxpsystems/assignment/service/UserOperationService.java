@@ -26,7 +26,7 @@ public interface UserOperationService {
 	@Secured({ "ROLE_USER", "ROLE_READ", "ROLE_WRITE", "ROLE_ADMIN", "ROLE_SUPERUSER" })
 	public User getUserByID(Long id);
 
-	@Secured({ "ROLE_ADMIN", "ROLE_SUPERUSER" })
+	@Secured({ "ROLE_ADMIN", "ROLE_SUPERUSER",  "ROLE_WRITE" })
 	public void deleteUserByID(Long id, Authentication auth) throws UXPExecption;
 
 	@Secured({ "ROLE_ADMIN", "ROLE_SUPERUSER", "ROLE_WRITE" })

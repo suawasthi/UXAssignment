@@ -21,9 +21,9 @@ window.app = new Vue({
         deleted:'0',
         updated:'0',
         options: [{
-        	username: "",
+        	userName: "",
             email:"", 
-            ID:"",
+            id:"",
         }],
         // createUserData.username
         createUserData: {
