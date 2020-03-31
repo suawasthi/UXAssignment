@@ -94,6 +94,7 @@ public class UserOperationController {
 		
 		 List<String> details = new ArrayList<>();
 	       details.add(exception.getLocalizedMessage());
+	       System.out.println("trial");
         ErrorResponse error = new ErrorResponse(details, exception.getMessage());
 
 		return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -105,6 +106,7 @@ public class UserOperationController {
 	@ResponseStatus()
 	public JSONObject createUser(Authentication auth, @Valid @RequestBody CreateUSer user) {
 		userService.addUser(user.getUserName(), user.getPassword(), user.getEmail(), user.getRole());
+		
 		return success;
 	}
 	
