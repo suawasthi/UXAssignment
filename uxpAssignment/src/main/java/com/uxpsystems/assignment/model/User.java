@@ -39,9 +39,9 @@ public abstract class User extends Auditable {
 	}
 
 	@Column(unique=true)
-	@NotBlank
+	@NotBlank(message="Username can't be blank or dublicate")
 	protected String userName;
-	@NotBlank
+	@NotBlank(message="Password can't be empty")
 	protected String saltedPassword;
 	
 	protected boolean isActive=true;
@@ -50,7 +50,7 @@ public abstract class User extends Auditable {
 	@ManyToOne
 	Role roles;
 	
-	@Email
+	@Email(message="Not a valid email address")
 	private String email;
 
 }

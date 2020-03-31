@@ -36,9 +36,9 @@ window.app = new Vue({
     },
     methods: {
     	setError: function(response) {
+    		console.log(response);
             if(response.status==='success') return;
             if(response.status=='403'){
-            	console.log("inside 403");
             	this.errorText="Permission Denied";
             	return;
             } 
@@ -97,10 +97,13 @@ window.app = new Vue({
                     "Content-type": "application/json; charset=UTF-8"
                 }
               
-            }).catch( err => {
-            	console.log("adfafafsdafsf");
-                err.text().then( this.errorText="Permission Denied")
-                  });
+            }).then(function(response) {
+                console.log("jbkjb");
+            	if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+            })
+           
     	},
         getAllUser: function(response){
         	let appdata=this;
