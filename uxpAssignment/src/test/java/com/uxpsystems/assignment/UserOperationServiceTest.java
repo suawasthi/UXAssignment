@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.uxpsystems.assignment.exeception.UserNotFoundExcption;
 import com.uxpsystems.assignment.model.Admin;
 import com.uxpsystems.assignment.service.UserOperationService;
 
@@ -26,7 +27,7 @@ public class UserOperationServiceTest {
 	
 	@SuppressWarnings("deprecation")
 	@Test
-	public void whenUserByIDthenRetriveUser() {
+	public void whenUserByIDthenRetriveUser() throws UserNotFoundExcption {
 		
 	
 		
