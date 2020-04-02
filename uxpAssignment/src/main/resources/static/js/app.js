@@ -116,7 +116,10 @@ window.app = new Vue({
         performDelete:function(){
         	fetch('/delete-user?' +  new URLSearchParams({
         		id:this.deleted}), {method: "DELETE"}).then(this.setError);
+        	fetch('/all-user').then(this.getAllUser);
         	deleted='0';
+        	
+
         },
         performUpdate:function(){
         	fetch('/getUserByID?' +  new URLSearchParams({

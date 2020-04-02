@@ -142,7 +142,7 @@ public class UserOperationController {
 	}
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler({MethodArgumentNotValidException.class, UserNotFoundExcption.class})
+	@ExceptionHandler({MethodArgumentNotValidException.class, UserNotFoundExcption.class, IllegalStateException.class})
 	public Map<String, String> handleValidationExceptions(
 
 			MethodArgumentNotValidException ex) {
@@ -152,6 +152,7 @@ public class UserOperationController {
 	        String errorMessage = error.getDefaultMessage();
 	        errors.put(fieldName, errorMessage);
 	    });
+	    LOGGER.info(errors.toString());
 	    return errors;
 	}
 }

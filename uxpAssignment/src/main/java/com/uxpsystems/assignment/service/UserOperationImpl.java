@@ -10,6 +10,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -50,6 +53,7 @@ public class UserOperationImpl implements UserOperationService {
 	}
 
 	@Override
+	@CacheEvict(value = "userCache")
 	public void addUser(String userNAme, String password, String email, String roleName) {
 		User user = new Customer();
 
@@ -71,6 +75,7 @@ public class UserOperationImpl implements UserOperationService {
 	}
 
 	@Override
+	@CachePut(value = "userCache")
 	public List<User> getAllUser() {
 		List<Admin> usr = adminRepo.findAll();
 		List<Customer> consumer = consumerRepo.findAll();
@@ -87,6 +92,7 @@ public class UserOperationImpl implements UserOperationService {
 	}
 
 	@Override
+	@Cacheable("user")
 	public User getUserByID(Long id) throws UserNotFoundExcption {
 		LOGGER.info("Inside service :: getUserByID :: By  ID" + id);
 		Optional<User> user = userRepo.findById(id);
@@ -114,6 +120,7 @@ public class UserOperationImpl implements UserOperationService {
 	}
 
 	@Override
+	@CacheEvict(value = "userCache")
 	public void updateUser(CreateUSer user) {
 		LOGGER.info("Inside service :: update user with :: " + user);
 
