@@ -57,6 +57,7 @@ public class DEVBootStrap implements ApplicationListener<ContextRefreshedEvent> 
 		Admin superUser = new Admin();
 		superUser.setUserName("Ravish");
 		superUser.setSaltedPassword(passwordEncoder.encode("ravish"));
+		
 		superUser.setEmail("ravish@gmail.com");
 		superUser.setActive(true);
 		
