@@ -29,3 +29,12 @@ build/
 
 ### VS Code ###
 .vscode/
+/.gitignore
+/.mvn/
+/Readme.text
+/app.log
+/java/
+/mvnw
+/mvnw.cmd
+/pom.xml
+/src/

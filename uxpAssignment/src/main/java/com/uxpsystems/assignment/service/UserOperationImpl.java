@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -18,6 +19,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IList;
 import com.uxpsystems.assignment.controller.UserOperationController;
 import com.uxpsystems.assignment.dao.AdminRepo;
 import com.uxpsystems.assignment.dao.ConsumerRepo;
@@ -45,6 +48,9 @@ public class UserOperationImpl implements UserOperationService {
 
 	@Autowired
 	RoleRepo roleRepo;
+	
+	@Autowired
+	private HazelcastInstance hazelCastInstance;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserOperationImpl.class);
 
@@ -53,8 +59,9 @@ public class UserOperationImpl implements UserOperationService {
 	}
 
 	@Override
-	@CacheEvict(value = "userCache")
 	public void addUser(String userNAme, String password, String email, String roleName) {
+		Map<Long,User> userCache = hazelCastInstance.getMap("configuration"); 
+		
 		User user = new Customer();
 
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -71,12 +78,15 @@ public class UserOperationImpl implements UserOperationService {
 		}
 
 		Customer cust = consumerRepo.save((Customer) user);
+		userCache.put(cust.getID(), cust);
+		
 		LOGGER.debug("Customer added as : " + cust);
 	}
 
 	@Override
-	@CachePut(value = "userCache")
 	public List<User> getAllUser() {
+		
+		
 		List<Admin> usr = adminRepo.findAll();
 		List<Customer> consumer = consumerRepo.findAll();
 
@@ -92,7 +102,6 @@ public class UserOperationImpl implements UserOperationService {
 	}
 
 	@Override
-	@Cacheable("user")
 	public User getUserByID(Long id) throws UserNotFoundExcption {
 		LOGGER.info("Inside service :: getUserByID :: By  ID" + id);
 		Optional<User> user = userRepo.findById(id);
@@ -120,7 +129,6 @@ public class UserOperationImpl implements UserOperationService {
 	}
 
 	@Override
-	@CacheEvict(value = "userCache")
 	public void updateUser(CreateUSer user) {
 		LOGGER.info("Inside service :: update user with :: " + user);
 
@@ -134,6 +142,14 @@ public class UserOperationImpl implements UserOperationService {
 			optionalUser.get().setUserName(user.getUserName());
 			optionalUser.get().setRoles(role.get());
 			User savedUser = userRepo.save(optionalUser.get());
+			
+			Map<Long,User> userCache = hazelCastInstance.getMap("configuration"); 
+			
+			if(userCache.get(optionalUser.get().getID()) !=null) {
+				userCache.replace(optionalUser.get().getID(), optionalUser.get());
+			}
+			
+			
 			LOGGER.debug("Inside service :: saved object " + savedUser.toString());
 
 		}

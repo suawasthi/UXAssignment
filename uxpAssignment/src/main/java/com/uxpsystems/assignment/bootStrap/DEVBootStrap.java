@@ -12,11 +12,13 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.hazelcast.core.HazelcastInstance;
 import com.uxpsystems.assignment.dao.AdminRepo;
 import com.uxpsystems.assignment.dao.ConsumerRepo;
 import com.uxpsystems.assignment.dao.RoleRepo;
 import com.uxpsystems.assignment.model.Admin;
 import com.uxpsystems.assignment.model.Role;
+import com.uxpsystems.assignment.model.User;
 
 @Component
 public class DEVBootStrap implements ApplicationListener<ContextRefreshedEvent> {
@@ -29,6 +31,9 @@ public class DEVBootStrap implements ApplicationListener<ContextRefreshedEvent> 
 
 	@Autowired
 	ConsumerRepo consumerRepo;
+	
+	@Autowired
+	private HazelcastInstance hazelCastInstance;
 
 	
 	
@@ -60,6 +65,21 @@ public class DEVBootStrap implements ApplicationListener<ContextRefreshedEvent> 
 		
 		adminRepo.save(admin);
 		adminRepo.save(superUser);
+		
+		
+		java.util.Map<Long,User> stringStringMap = hazelCastInstance.getMap("configuration");
+		List<User> cacheUser = hazelCastInstance.getList("userList");
+		for(Admin admi : adminRepo.findAll()) {
+			System.out.println(admi);
+			cacheUser.add(admi);
+			stringStringMap.put(admi.getID(), admi);
+		}
+		System.out.println(stringStringMap.values());
+		System.out.println(stringStringMap.keySet());
+		System.out.println("user added " + cacheUser);
+
+		
+		
 		
 	}
 

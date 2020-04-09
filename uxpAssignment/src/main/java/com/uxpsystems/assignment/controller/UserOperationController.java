@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hazelcast.core.HazelcastInstance;
 import com.uxpsystems.assignment.exeception.UXPExecption;
 import com.uxpsystems.assignment.exeception.UserNotFoundExcption;
 import com.uxpsystems.assignment.model.CreateUSer;
@@ -39,10 +39,11 @@ import net.minidev.json.JSONObject;
 @RestController
 public class UserOperationController {
 
-	
-    private static final Logger LOGGER=LoggerFactory.getLogger(UserOperationController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserOperationController.class);
 
-	
+	@Autowired
+	private HazelcastInstance hazelCastInstance;
+
 	@Autowired
 	UserOperationService userService;
 
@@ -55,8 +56,6 @@ public class UserOperationController {
 		success = new JSONObject();
 		success.put("status", "success");
 	}
-
-
 
 	@RequestMapping("/userDetails")
 	public JSONObject getUserDetails(Authentication auth) throws UXPExecption {
@@ -89,15 +88,22 @@ public class UserOperationController {
 	@GetMapping("/all-user")
 	public List<User> getAllUser() {
 		LOGGER.info("UserOperationController:: All User ");
-		
+
 		return userService.getAllUser();
 	}
 
 	@GetMapping("/getUserByID")
 	public User getUser(Authentication auth, @RequestParam(name = "id") Long id) throws UserNotFoundExcption {
 		LOGGER.info("UserOperationController:: getUser By ID " + id);
-
-		return userService.getUserByID(id);
+		Map<Long,User> userCache = hazelCastInstance.getMap("configuration"); 
+		
+		System.out.println(userCache.values());
+			if(userCache.get(id) !=null) {
+				LOGGER.info("Cache hit for user with id " + id);
+				return userCache.get(id);
+			}
+		
+			return userService.getUserByID(id);
 	}
 
 	@DeleteMapping("/delete-user")
@@ -111,48 +117,49 @@ public class UserOperationController {
 
 	@ExceptionHandler(UXPExecption.class)
 	public final ResponseEntity<String> handleCustomException(UXPExecption exception) {
-		LOGGER.info("UserOperationController::handleCustomException " );
+		LOGGER.info("UserOperationController::handleCustomException ");
 
-		 List<String> details = new ArrayList<>();
-	       details.add(exception.getLocalizedMessage());
-	       System.out.println("trial");
-	       
-        ErrorResponse error = new ErrorResponse(details, exception.getMessage());
+		List<String> details = new ArrayList<>();
+		details.add(exception.getLocalizedMessage());
+		System.out.println("trial");
+
+		ErrorResponse error = new ErrorResponse(details, exception.getMessage());
 
 		return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
-	
-	
+
 	@PostMapping(value = "/create-user")
 	@ResponseStatus()
 	public JSONObject createUser(Authentication auth, @Valid @RequestBody CreateUSer user) {
-		LOGGER.info("UserOperationController::createUser   "+ user  );
+		LOGGER.info("UserOperationController::createUser   " + user);
 
 		userService.addUser(user.getUserName(), user.getPassword(), user.getEmail(), user.getRole());
-		LOGGER.info("UserOperationController::createUser :: user added sucessfully with username "+user.getUserName());
+		LOGGER.info(
+				"UserOperationController::createUser :: user added sucessfully with username " + user.getUserName());
 		return success;
 	}
-	
+
 	@RequestMapping("/noAccess")
 	public String noAcess() {
-		
-		LOGGER.info("UserOperationController::noAcess  :: No authrorization" );
+
+		LOGGER.info("UserOperationController::noAcess  :: No authrorization");
 		return "Permission denied";
 	}
-	
+
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler({MethodArgumentNotValidException.class, UserNotFoundExcption.class, IllegalStateException.class})
+	@ExceptionHandler({ MethodArgumentNotValidException.class, UserNotFoundExcption.class,
+			IllegalStateException.class })
 	public Map<String, String> handleValidationExceptions(
 
 			MethodArgumentNotValidException ex) {
-	    Map<String, String> errors = new HashMap();
-	    ex.getBindingResult().getAllErrors().forEach((error) -> {
-	        String fieldName = ((FieldError) error).getField();
-	        String errorMessage = error.getDefaultMessage();
-	        errors.put(fieldName, errorMessage);
-	    });
-	    LOGGER.info(errors.toString());
-	    return errors;
+		Map<String, String> errors = new HashMap();
+		ex.getBindingResult().getAllErrors().forEach((error) -> {
+			String fieldName = ((FieldError) error).getField();
+			String errorMessage = error.getDefaultMessage();
+			errors.put(fieldName, errorMessage);
+		});
+		LOGGER.info(errors.toString());
+		return errors;
 	}
 }
